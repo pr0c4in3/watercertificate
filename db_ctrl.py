@@ -47,7 +47,7 @@ class ca_db:
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     username TEXT NOT NULL,
                     image_path TEXT NOT NULL,
-                    image_name TEXT NOT NULL,
+                    image_name TEXT UNIQUE NOT NULL,
                     watermark TEXT NOT NULL,
                     watermark_key TEXT NOT NULL,
                     FOREIGN KEY (username) REFERENCES users(username)
@@ -61,12 +61,32 @@ class ca_db:
                 VALUES (?, ?, ?, ?, ?)
             ''', (username, image_path, image_name, watermark, watermark_key))
 
-    def get_certificate(self, image_name: str) -> Optional[dict]:
+    def get_certificate_by_user(self, username: str) -> list:
         cur = self.conn.cursor()
         cur.execute('''
             SELECT * FROM certificates
-            WHERE image_name = ?
-        ''', (image_name,))
+            WHERE username = ?
+        ''', (username,))
+        rows = cur.fetchall()
+        certificates = []
+        for row in rows:
+            certificates.append({
+                'id': row[0],
+                'username': row[1],
+                'image_path': row[2],
+                'image_name': row[3],
+                'watermark': row[4],
+                'watermark_key': row[5]
+            })
+        return certificates
+
+    
+    def get_certificate_by_wm(self, watermark: str) -> Optional[dict]:
+        cur = self.conn.cursor()
+        cur.execute('''
+            SELECT * FROM certificates
+            WHERE watermark = ?
+        ''', (watermark,))
         row = cur.fetchone()
         if row:
             return {
@@ -84,24 +104,31 @@ if __name__ == "__main__":
     login_manager = login_db()
     ca_manager = ca_db()
 
-    # Register a new user
+    # 用户注册
     if login_manager.register_user('user1', 'password123'):
         print('User registered successfully.')
     else:
         print('Username already exists.')
 
-    # Authenticate user
+    # 登录
     if login_manager.authenticate_user('user1', 'password123'):
         print('Authentication successful.')
     else:
         print('Authentication failed.')
 
-    # Add a new certificate
-    ca_manager.add_certificate('user1', '/path/to/image', 'image1.png', 'watermark_data', 'watermark_key123')
+    # 添加证书，这里已经添加过一次了，再添加会破坏unique完整性
+    # ca_manager.add_certificate('user1', '/path/to/image', 'image1.png', 'watermark_data', 'watermark_key123')
+    # ca_manager.add_certificate('user1', '/path/to/image', 'image2.png', 'test', '123456')
 
-    # Retrieve a certificate
-    cert = ca_manager.get_certificate('image1.png')
+    # 查询证书
+    cert = ca_manager.get_certificate_by_user('user1')
     if cert:
         print(f'Certificate found: {cert}')
+    else:
+        print('Certificate not found.')
+    cert2 = ca_manager.get_certificate_by_wm('test')
+    u=cert2['username']
+    if cert2:
+        print(f'Certificate found: {u}')
     else:
         print('Certificate not found.')

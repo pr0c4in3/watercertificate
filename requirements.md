@@ -1,14 +1,14 @@
-io
-mimetypes
-os
-flask~=2.2.3
-werkzeug.utils
-random
-copy
-sys
-numpy~=1.23.3
-opencv
-pywt
-typing
-opencv-python~=4.7.0.72
-Werkzeug~=2.2.2
+- io
+- mimetypes
+- os
+- flask~=2.2.3
+- werkzeug.utils
+- random
+- copy
+- sys
+- numpy~=1.23.3
+- opencv
+- pywt
+- typing
+- opencv-python~=4.7.0.72
+- Werkzeug~=2.2.2
