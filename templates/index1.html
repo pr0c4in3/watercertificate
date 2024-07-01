@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+ 
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>影踪v1.0</title>
+  <link rel="stylesheet" href="static/css/style.css">
+  <script type="text/javascript" src="static/1.js"></script>
+</head>
+ 
+<body>
+  
+  <div class='card-holder'>
+    <div class='card-wrapper'>
+        <a href=''>
+            <div class='card bg-01'>
+                <span class='card-content'>添加水印</span>
+            </div>
+        </a>
+    </div>
+    <div class='card-wrapper'>
+        <a href='/watermark_trace'>
+            <div class='card bg-02'>
+                <span class='card-content'>水印提取</span>
+            </div>
+        </a>
+    </div>
+
+                    <!--侧边栏 -->
+    <!-- <div class='card-wrapper'>
+        <a href='#'>
+            <div class='card bg-05'>
+                <span class='card-content'>menu item #5</span>
+            </div>
+        </a>
+    </div>
+    <div class='card-wrapper'>
+        <a href='#'>
+            <div class='card bg-06'>
+                <span class='card-content'>long menu item #1</span>
+            </div>
+        </a>
+    </div> -->
+  </div>
+  <div class="box">
+    <img src="../static/head.png" alt="">
+    <form action="http://localhost:80/embed" target="_blank" method="POST"enctype="multipart/form-data">
+        <p class="fil">需加密的图片 ： <input type="file" name="file" ></p>
+        <p class="tex"><input type="text" name="password_img" value="" placeholder="密钥"></p>
+        <p class="tex"><input type="text" name="wm_text" value="" placeholder="水印信息"></p>
+        <span class="bottom"><input type="submit" value="提交"></span>
+    </form>                   <!--表单 -->
+
+  <div class="msg_box">
+    <div class="msg_btn_box">
+      CopyRight 2023, by yinzong team All Rights Reserved.
+    </div>
+  </div>            <!--版权声明 -->
+</body>
+ 
+</html>
