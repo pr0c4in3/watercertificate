@@ -9,6 +9,6 @@ sys
 numpy~=1.23.3
 opencv
 pywt
-
+typing
 opencv-python~=4.7.0.72
 Werkzeug~=2.2.2
