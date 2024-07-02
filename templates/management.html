@@ -57,8 +57,8 @@ async function searchCertificates() {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${certificate.id}</td>
-            <td>${certificate.name}</td>
-            <td>${certificate.description}</td>
+            <td>${certificate.image_name}</td>
+            <td>${certificate.watermark}</td>
         `;
         tableBody.appendChild(row);
     });
@@ -140,10 +140,13 @@ async function searchCertificates() {
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>名称</th>
-                    <th>描述</th>
+                    <th>图片名称</th>
+                    <th>水印</th>
                 </tr>
             </thead>
+            <script>
+                searchCertificates();
+            </script>
             <tbody>
                 <!-- 证书列表将在这里动态生成 -->
             </tbody>

@@ -90,8 +90,11 @@ def showlist():
     username1=session['username']   #当前用户名
     certificate_db=ca_db()
     result=certificate_db.get_certificate_by_user(username1)
-    res = json.dumps(result)
-    return res
+    # res = json.dumps(result)      #debug
+    # print(result)
+    # print(res)
+    return result
+
 
 
 
