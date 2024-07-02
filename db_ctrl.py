@@ -98,6 +98,22 @@ class ca_db:
                 'watermark_key': row[5]
             })
         return certificates
+    
+    def get_lesscertificate_by_user(self, username: str) -> list:
+        cur = self.conn.cursor()
+        cur.execute('''
+            SELECT * FROM certificates
+            WHERE username = ?
+        ''', (username,))
+        rows = cur.fetchall()
+        certificates = []
+        for row in rows:
+            certificates.append({
+                'id': row[0],
+                'image_name': row[3],
+                'watermark': row[4],
+            })
+        return certificates
 
     
     def get_certificate_by_wm(self, watermark: str) -> Optional[dict]:
@@ -141,7 +157,7 @@ if __name__ == "__main__":
     login_manager = login_db()
     ca_manager = ca_db()
 
-    test=ca_manager.debug_certificate()
+    test=ca_manager.get_lesscertificate_by_user('test')
     test2=login_manager.debug_user()
     print(test)
     print('')

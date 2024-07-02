@@ -18,6 +18,58 @@
         right: 20px;
     }
 </style>
+<script>
+//     document.addEventListener('DOMContentLoaded', () => {
+//     const loggedInUser = localStorage.getItem('loggedInUser');
+//     const loggedInUserSpan = document.getElementById('logged-in-user');
+//     const searchButton = document.getElementById('search-button');
+//     const logoutButton = document.getElementById('logout-button');
+
+//     if (loggedInUser) {
+//         loggedInUserSpan.textContent = loggedInUser;
+//     } else {
+//         // 禁用搜索按钮
+//         searchButton.disabled = true;
+//         // 添加全局点击事件监听器
+//         document.body.addEventListener('click', function(event) {
+//             alert('请先登录');
+//         });
+//     }
+
+//     searchButton.addEventListener('click', searchCertificates);
+//     logoutButton.addEventListener('click', logout);
+// });
+
+async function searchCertificates() {
+    const searchQuery = document.getElementById('search-input').value;
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    console.log('搜索查询:', searchQuery);
+    console.log('当前用户:', loggedInUser);
+
+    // 假设这里调用后台的 JSON 接口
+    const response = await fetch(`/showlist`);
+    const certificates = await response.json();
+
+    const tableBody = document.querySelector('#certificate-table tbody');
+    tableBody.innerHTML = ''; // 清空表格内容
+
+    certificates.forEach(certificate => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${certificate.id}</td>
+            <td>${certificate.name}</td>
+            <td>${certificate.description}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// function logout() {
+//     localStorage.removeItem('loggedInUser');
+//     window.location.href = 'login.html';
+// }
+
+</script>
 </head>
  
 <body>

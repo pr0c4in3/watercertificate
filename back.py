@@ -2,6 +2,8 @@ from flask import Flask, request, send_file, render_template
 from web import web
 from flask import Flask, render_template, request, redirect, url_for, flash, g, session #登录相关
 from db_ctrl import login_db,ca_db #调用登录库，证书管理库
+import json #调用json库
+
 '''
 后端主程序，负责页面的调用和管理
 '''
@@ -84,7 +86,12 @@ def management():
 
 @app.route('/showlist')
 def showlist():
-    return
+    print('use showlist')
+    username1=session['username']   #当前用户名
+    certificate_db=ca_db()
+    result=certificate_db.get_certificate_by_user(username1)
+    res = json.dumps(result)
+    return res
 
 
 
