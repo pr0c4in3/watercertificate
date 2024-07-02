@@ -33,6 +33,20 @@ class login_db:
             WHERE username = ? AND password = ?
         ''', (username, password))
         return cur.fetchone() is not None
+    
+    def debug_user(self) -> list: #DEBUG:负责查询user表
+        cur = self.conn.cursor()
+        cur.execute('''
+            SELECT * FROM users
+        ''')
+        rows = cur.fetchall()
+        users = []
+        for row in rows:
+            users.append({
+                'username': row[0],
+                'password': row[1],
+            })
+        return users
 
 
 class ca_db:
@@ -104,38 +118,50 @@ class ca_db:
             }
         return None
 
-# Example usage
+
 if __name__ == "__main__":
     login_manager = login_db()
     ca_manager = ca_db()
 
-    # 用户注册
-    if login_manager.register_user('user1', 'password123'):
-        print('User registered successfully.')
-    else:
-        print('Username already exists.')
+    #DEBUG，检查之前的注册是否成功
+    print('debug:')
+    print(login_manager.debug_user())
 
-    # 登录
-    if login_manager.authenticate_user('user1', 'password123'):
-        print('Authentication successful.')
-    else:
-        print('Authentication failed.')
 
-    # 添加证书，这里已经添加过一次了，再添加会破坏unique完整性（修改后的代码检测到异常后会返回false继续运行）
-    add1=ca_manager.add_certificate('user1', '/path/to/image', 'image1.png', 'watermark_data', 'watermark_key123')
-    add2=ca_manager.add_certificate('user1', '/path/to/image', 'image2.png', 'test', '123456')
-    print('add1',add1,'add2',add2)
-    # 查询证书
-    cert = ca_manager.get_certificate_by_user('user1')
-    if cert:
-        print(f'Certificate found: ')
-        for item in cert:
-            print(item['image_name'])
-    else:
-        print('Certificate not found.')
-    cert2 = ca_manager.get_certificate_by_wm('test')
-    u=cert2['username']
-    if cert2:
-        print(f'Certificate found: {u}')
-    else:
-        print('Certificate not found.')
+
+
+
+
+    # # 示例
+    # print('')
+    # print('example:')
+    # # 用户注册
+    # if login_manager.register_user('user1', 'password123'):
+    #     print('User registered successfully.')
+    # else:
+    #     print('Username already exists.')
+
+    # # 登录
+    # if login_manager.authenticate_user('user1', 'password123'):
+    #     print('Authentication successful.')
+    # else:
+    #     print('Authentication failed.')
+
+    # # 添加证书，这里已经添加过一次了，再添加会破坏unique完整性（修改后的代码检测到异常后会返回false继续运行）
+    # add1=ca_manager.add_certificate('user1', '/path/to/image', 'image1.png', 'watermark_data', 'watermark_key123')
+    # add2=ca_manager.add_certificate('user1', '/path/to/image', 'image2.png', 'test', '123456')
+    # print('add1',add1,'add2',add2)
+    # # 查询证书
+    # cert = ca_manager.get_certificate_by_user('user1')
+    # if cert:
+    #     print(f'Certificate found: ')
+    #     for item in cert:
+    #         print(item['image_name'])
+    # else:
+    #     print('Certificate not found.')
+    # cert2 = ca_manager.get_certificate_by_wm('test')
+    # u=cert2['username']
+    # if cert2:
+    #     print(f'Certificate found: {u}')
+    # else:
+    #     print('Certificate not found.')

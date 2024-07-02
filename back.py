@@ -1,34 +1,102 @@
 from flask import Flask, request, send_file, render_template
 from web import web
-
+from flask import Flask, render_template, request, redirect, url_for, flash, g, session #登录相关
+from db_ctrl import login_db #调用登录库
 '''
 后端主程序，负责页面的调用和管理
 '''
 
-
-
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'
+DATABASE = 'login.db'
+'''
+登录相关
+'''
+def get_db(): #获取数据库
+    if 'db' not in g:
+        g.db = login_db(DATABASE)
+    return g.db
+# @app.teardown_appcontext    #关闭数据库
+# def close_db(error):
+#     db = g.pop('db', None)
+#     if db is not None:
+#         db.close()
+'''
+登入登出操作
+'''
+
+@app.route('/')
+def home():
+    if 'username' in session:
+        return render_template('embed.html', username=session['username'])
+    return render_template('login.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        print(request.form)
+        db = get_db()
+        if db.authenticate_user(username, password):
+            print('login success')
+            session['username'] = username
+            flash('Login successful!', 'success')
+            return redirect(url_for('home'))
+        else:
+            print('login fail')
+            flash('Login failed. Check your username and password.', 'danger')
+    return render_template('login.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        #print(request.form)#debug
+        db = get_db()
+        if db.register_user(username, password):
+            print('success')
+            flash('Registration successful! Please login.', 'success')
+            return redirect(url_for('login'))
+        else:
+            print('exist')
+            flash('Username already exists. Please choose another.', 'danger')
+            return render_template('registerror.html')
+    #return render_template('register.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    flash('You have been logged out.', 'success')
+    return redirect(url_for('home'))
 
 
+'''
+处理水印相关
+'''
 
-@app.route("/", methods=["GET", "POST"])  # 主页
+
+@app.route("/watermark_embed", methods=["GET", "POST"])  # 原来的增加水印
 def index():
-    return render_template('index.html')
-
-
-@app.route("/project_introduce", methods=["GET", "POST"])  # 项目介绍
-def project_introduce():
-    return render_template('introduce.html')
-
-
-@app.route("/project_member", methods=["GET", "POST"])  # 项目成员
-def project_member():
-    return render_template('member.html')
-
+    return render_template('embed.html')
 
 @app.route("/watermark_trace", methods=["GET", "POST"])  # 水印追踪
 def watermark_trace():
     return render_template('trace.html')
+
+
+
+# @app.route("/project_introduce", methods=["GET", "POST"])  # 项目介绍
+# def project_introduce():
+#     return render_template('introduce.html')
+
+# @app.route("/project_member", methods=["GET", "POST"])  # 项目成员
+# def project_member():                                             #这两部分暂时不需要
+#     return render_template('member.html')
+
+
+
 
 
 @app.route("/embed", methods=["GET", "POST"])  # 插入水印的操作，结果是返回图片或者返回错误信息
