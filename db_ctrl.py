@@ -117,17 +117,46 @@ class ca_db:
                 'watermark_key': row[5]
             }
         return None
+    
+    def debug_certificate(self) -> list:
+        cur = self.conn.cursor()
+        cur.execute('''
+            SELECT * FROM certificates
+        ''')
+        rows = cur.fetchall()
+        certificates = []
+        for row in rows:
+            certificates.append({
+                'id': row[0],
+                'username': row[1],
+                'image_path': row[2],
+                'image_name': row[3],
+                'watermark': row[4],
+                'watermark_key': row[5]
+            })
+        return certificates
 
 
 if __name__ == "__main__":
     login_manager = login_db()
     ca_manager = ca_db()
 
-    #DEBUG，检查之前的注册是否成功
-    print('debug:')
-    print(login_manager.debug_user())
+    test=ca_manager.debug_certificate()
+    print(test)
 
 
+
+    # #DEBUG，检查之前的注册是否成功
+    # print('debug:')
+    # print(login_manager.debug_user())
+
+    # #DEBUG, 查看当前证书目录
+    # cert2 = ca_manager.get_certificate_by_user('newman')
+    # #u=cert2['username']
+    # if cert2:
+    #     print(f'Certificate found: {cert2}')
+    # else:
+    #     print('Certificate not found.')
 
 
 

@@ -82,13 +82,14 @@ class web:
                                   path_in=self.path_in, path_out=self.path_out)
         self.filename_out = str(len(self.watermark_embed.wm_bit)) + '.' + self.extension
         return_data = self.read_filename_to_memory()
-        self.delete()
+        #self.delete()
         return return_data
 
     def extract(self,result):               #调用提取水印代码
         self.wm_size = result['wm_size']
         wm = self.watermark_extract.extract(filename=self.path_in + self.filename_in, embed_img=None, wm_shape=self.wm_size,
                                             out_wm_name=None, mode='str')
+        self.delete()
         return wm
 
 

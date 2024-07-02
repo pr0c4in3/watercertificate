@@ -1,7 +1,7 @@
 from flask import Flask, request, send_file, render_template
 from web import web
 from flask import Flask, render_template, request, redirect, url_for, flash, g, session #登录相关
-from db_ctrl import login_db #调用登录库
+from db_ctrl import login_db,ca_db #调用登录库，证书管理库
 '''
 后端主程序，负责页面的调用和管理
 '''
@@ -26,12 +26,12 @@ def get_db(): #获取数据库
 '''
 
 @app.route('/')
-def home():
+def home(): #主页，session存在则跳转至添加水印（目前），不存在则跳转至登录
     if 'username' in session:
         return render_template('index.html', username=session['username'])
     return render_template('login.html')
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])   #登录
 def login():
     if 'username' in session:
         session.pop('username',None)
@@ -48,9 +48,10 @@ def login():
         else:
             print('login fail')
             flash('Login failed. Check your username and password.', 'danger')
+            return render_template('loginerror.html')
     return render_template('login.html')
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])    #注册
 def register():
     if request.method == 'POST':
         username = request.form['username']
@@ -67,7 +68,7 @@ def register():
             return render_template('registerror.html')
     #return render_template('register.html')
 
-@app.route('/logout')
+@app.route('/logout')#登出，这里暂时保留
 def logout():
     session.pop('username', None)
     flash('You have been logged out.', 'success')
@@ -103,11 +104,17 @@ def watermark_trace():
 
 @app.route("/embed", methods=["GET", "POST"])  # 插入水印的操作，结果是返回图片或者返回错误信息
 def embed():
+    if 'username' in session:
+        username=session['username']
+        ca=ca_db()
+    else:
+        return render_template(login.html)
     result = request.form
     file = request.files['file']
     water = web()
     if water.verify(file, result=result):
         return_data = water.embed(result)
+        ca.add_certificate(username, water.path_in, water.filename_in, result['wm_text'], result['password_img'])
         return send_file(return_data, as_attachment=True, mimetype=water.mimetype, download_name=water.filename_out)
     else:
         return render_template('index.html', statu="error")
