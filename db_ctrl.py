@@ -47,7 +47,7 @@ class ca_db:
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     username TEXT NOT NULL,
                     image_path TEXT NOT NULL,
-                    image_name TEXT UNIQUE NOT NULL,
+                    image_name TEXT UNIQUE,
                     watermark TEXT NOT NULL,
                     watermark_key TEXT NOT NULL,
                     FOREIGN KEY (username) REFERENCES users(username)
@@ -55,11 +55,16 @@ class ca_db:
             ''')
 
     def add_certificate(self, username: str, image_path: str, image_name: str, watermark: str, watermark_key: str):
-        with self.conn:
-            self.conn.execute('''
-                INSERT INTO certificates (username, image_path, image_name, watermark, watermark_key)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (username, image_path, image_name, watermark, watermark_key))
+        try:
+            with self.conn:
+                self.conn.execute('''
+                    INSERT INTO certificates (username, image_path, image_name, watermark, watermark_key)
+                    VALUES (?, ?, ?, ?, ?)
+                ''', (username, image_path, image_name, watermark, watermark_key))
+                return True
+        except sqlite3.IntegrityError:
+            return False
+        
 
     def get_certificate_by_user(self, username: str) -> list:
         cur = self.conn.cursor()
@@ -116,14 +121,16 @@ if __name__ == "__main__":
     else:
         print('Authentication failed.')
 
-    # 添加证书，这里已经添加过一次了，再添加会破坏unique完整性
-    # ca_manager.add_certificate('user1', '/path/to/image', 'image1.png', 'watermark_data', 'watermark_key123')
-    # ca_manager.add_certificate('user1', '/path/to/image', 'image2.png', 'test', '123456')
-
+    # 添加证书，这里已经添加过一次了，再添加会破坏unique完整性（修改后的代码检测到异常后会返回false继续运行）
+    add1=ca_manager.add_certificate('user1', '/path/to/image', 'image1.png', 'watermark_data', 'watermark_key123')
+    add2=ca_manager.add_certificate('user1', '/path/to/image', 'image2.png', 'test', '123456')
+    print('add1',add1,'add2',add2)
     # 查询证书
     cert = ca_manager.get_certificate_by_user('user1')
     if cert:
-        print(f'Certificate found: {cert}')
+        print(f'Certificate found: ')
+        for item in cert:
+            print(item['image_name'])
     else:
         print('Certificate not found.')
     cert2 = ca_manager.get_certificate_by_wm('test')
