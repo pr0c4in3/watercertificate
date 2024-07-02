@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+ 
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>影踪v1.0</title>
+  <link rel="stylesheet" href="static/css/index.css">
+  <script type="text/javascript" src="static/1.js"></script>
+  <script>
+    function showAlert() {
+        alert("Invalid file type. Please upload img file.");
+    }
+</script>
+<style>
+    .logout>button{
+        background-color: rgb(118, 136, 215);
+        font-size: 20px;
+    }
+    .logout{
+        border: 1px white solid;
+        display: inline-block;
+        position: absolute;
+        right: 20px;
+    }
+</style>
+</head>
+ 
+<body>
+    <!-- <form action=""> -->
+        <div class="logout">
+            <button   onclick="cclick()" >Logout</button>
+            <script>
+                function cclick(){
+                    alert("登出当前用户");
+                    window.location.href = 'login';
+                }
+            </script>
+        </div>
+    <!-- </form> -->
+
+  <div class='card-holder'>
+    <div class='card-wrapper'>
+        <a href=''>
+            <div class='card bg-01'>
+                <span class='card-content'>添加水印</span>
+            </div>
+        </a>
+    </div>
+    <div class='card-wrapper'>
+        <a href='/watermark_trace'>
+            <div class='card bg-02'>
+                <span class='card-content'>水印提取</span>
+            </div>
+        </a>
+    </div>
+    <div class='card-wrapper'>
+        <a href='/project_introduce'>
+            <div class='card bg-03'>
+                <span class='card-content'>项目介绍</span>
+            </div>
+        </a>
+    </div>
+    <div class='card-wrapper'>
+        <a href='/project_member'>
+            <div class='card bg-04'>
+                <span class='card-content' >项目成员</span>
+            </div>
+        </a>
+    </div>                      <!--侧边栏 -->
+    <!-- <div class='card-wrapper'>
+        <a href='#'>
+            <div class='card bg-05'>
+                <span class='card-content'>menu item #5</span>
+            </div>
+        </a>
+    </div>
+    <div class='card-wrapper'>
+        <a href='#'>
+            <div class='card bg-06'>
+                <span class='card-content'>long menu item #1</span>
+            </div>
+        </a>
+    </div> -->
+  </div>
+  <div class="box">
+    <img src="../static/head.png" alt="">
+    <h2>水印为{{watermark}}&nbsp;<a class="link1" href="../">点击回到主页</a></h2>
+    <form action="http://127.0.0.1:8080/embed" target="_blank" method="POST"enctype="multipart/form-data">
+        <p class="fil"> <input type="file" name="file"style="" ></p>
+        <p class="tex"><input type="text" name="password_img" value="" placeholder="密钥"></p>
+        <p class="tex"><input type="text" name="wm_text" value="" placeholder="水印信息"></p>
+        <span class="bottom"><input type="submit" value="提交"></span>
+    </form>                   <!--表单 -->
+  </div>
+    {% if statu=='error' %}
+        <script>
+            showAlert();
+        </script>
+    {% endif %}
+
+  <div class="msg_box">
+    <div class="msg_btn_box">
+      CopyRight 2024, by 天才 team All Rights Reserved.
+    </div>
+  </div>            <!--版权声明 -->
+</body>
+ 
+</html>

@@ -28,11 +28,13 @@ def get_db(): #获取数据库
 @app.route('/')
 def home():
     if 'username' in session:
-        return render_template('embed.html', username=session['username'])
+        return render_template('index.html', username=session['username'])
     return render_template('login.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if 'username' in session:
+        session.pop('username',None)
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -79,7 +81,7 @@ def logout():
 
 @app.route("/watermark_embed", methods=["GET", "POST"])  # 原来的增加水印
 def index():
-    return render_template('embed.html')
+    return render_template('index.html')
 
 @app.route("/watermark_trace", methods=["GET", "POST"])  # 水印追踪
 def watermark_trace():

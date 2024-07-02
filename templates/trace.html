@@ -4,9 +4,30 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>水印提取</title>
-  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/index.css">
+  <style>
+    .logout>button{
+        background-color: rgb(118, 136, 215);
+        font-size: 20px;
+    }
+    .logout{
+        border: 1px white solid;
+        display: inline-block;
+        position: absolute;
+        right: 20px;
+    }
+</style>
 </head>
 <body>
+    <div class="logout">
+        <button   onclick="cclick()" >Logout</button>
+        <script>
+            function cclick(){
+                alert("登出当前用户");
+                window.location.href = 'login';
+            }
+        </script>
+    </div>
     <div class='card-holder'>
         <div class='card-wrapper'>
             <a href='../'>
