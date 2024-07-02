@@ -73,6 +73,24 @@ def logout():
     session.pop('username', None)
     flash('You have been logged out.', 'success')
     return redirect(url_for('home'))
+'''
+证书管理
+'''
+@app.route('/management')
+def management():
+    username1=session['username']
+    return render_template('management.html',username=username1)
+
+
+@app.route('/showlist')
+def showlist():
+    return
+
+
+
+
+
+
 
 
 '''
@@ -82,11 +100,13 @@ def logout():
 
 @app.route("/watermark_embed", methods=["GET", "POST"])  # 原来的增加水印
 def index():
-    return render_template('index.html')
+    username1=session['username']
+    return render_template('index.html',username=username1)
 
 @app.route("/watermark_trace", methods=["GET", "POST"])  # 水印追踪
 def watermark_trace():
-    return render_template('trace.html')
+    username1=session['username']
+    return render_template('trace.html',username=username1)
 
 
 

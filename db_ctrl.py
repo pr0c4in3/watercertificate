@@ -142,8 +142,10 @@ if __name__ == "__main__":
     ca_manager = ca_db()
 
     test=ca_manager.debug_certificate()
+    test2=login_manager.debug_user()
     print(test)
-
+    print('')
+    print(test2)
 
 
     # #DEBUG，检查之前的注册是否成功

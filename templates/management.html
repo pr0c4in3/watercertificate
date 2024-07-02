@@ -3,14 +3,9 @@
  
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>添加水印</title>
+  <title>管理证书</title>
   <link rel="stylesheet" href="static/css/index.css">
-  <script type="text/javascript" src="static/1.js"></script>
-  <script>
-    function showAlert() {
-        alert("Invalid file type. Please upload img file.");
-    }
-</script>
+
 <style>
     .logout>button{
         background-color: rgb(118, 136, 215);
@@ -61,7 +56,7 @@
             </div>
         </a>
     </div>
-                   <!--侧边栏 -->
+                <!--侧边栏 -->
     <!-- <div class='card-wrapper'>
         <a href='#'>
             <div class='card bg-05'>
@@ -78,20 +73,32 @@
     </div> -->
   </div>
   <div class="box">
-    <img src="../static/head.png" alt="">
-    <h2>水印为{{watermark}}&nbsp;<a class="link1" href="../">点击回到主页</a></h2>
-    <form action="http://127.0.0.1:8080/embed" target="_blank" method="POST"enctype="multipart/form-data">
-        <p class="fil"> <input type="file" name="file"style="" ></p>
-        <p class="tex"><input type="text" name="password_img" value="" placeholder="密钥"></p>
-        <p class="tex"><input type="text" name="wm_text" value="" placeholder="水印信息"></p>
-        <span class="bottom"><input type="submit" value="提交"></span>
-    </form>                   <!--表单 -->
+    <div class="header">
+        <h1>证书管理</h1>
+        <div class="user-info">
+            <span id="logged-in-user"></span>
+        </div>
+    </div>
+    <div class="search-bar">
+        <input type="text" id="search-input" placeholder="搜索证书...">
+        <button id="search-button">搜索</button>
+    </div>
+    <div id="certificate-list">
+        <table id="certificate-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名称</th>
+                    <th>描述</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 证书列表将在这里动态生成 -->
+            </tbody>
+        </table>
+    </div>
   </div>
-    {% if statu=='error' %}
-        <script>
-            showAlert();
-        </script>
-    {% endif %}
+
 
   <div class="msg_box">
     <div class="msg_btn_box">
