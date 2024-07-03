@@ -3,7 +3,7 @@ from web import web
 from flask import Flask, render_template, request, redirect, url_for, flash, g, session #登录相关
 from db_ctrl import login_db,ca_db #调用登录库，证书管理库
 import json #调用json库
-
+import os
 '''
 后端主程序，负责页面的调用和管理
 '''
@@ -128,8 +128,13 @@ def del_pic():
     result = request.form
     print(result['image_name'])
     ca=ca_db()
+    # path=ca.get_certificate_by_img(result['image_name'])['image_path']
+    # print(path)
     answer = ca.delete_certificate_by_image_name(result['image_name'])
     if  answer:
+        # if os.path.exists(path):
+        #     os.remove(path)
+        #     os.removedirs(path[:-6])#去除末尾6个字符
         return {'status': 'ok'}
     else:
         return {'status': 'error'}
@@ -199,10 +204,30 @@ def extract():
     water = web()
     if water.verify(file, result=result):
         return_data=water.extract(result)
-        return render_template('index.html',watermark=return_data)
+        ca=ca_db()
+        res=ca.get_certificate_by_wm(return_data)
+        if not res == None:
+            #water.delete()
+            return render_template('search_result.html',watermark=return_data,id=res['id'],imgname=res['image_name'],author=res['username'])
+        else:
+            #water.delete()
+            return render_template('search_result.html',watermark=return_data,word='未找到对应证书')
     else:
         return render_template('index.html',statu="error")
     
+# @app.route("/search_result", methods=["GET", "POST"])  # 根据水印返回数据库中的证书信息
+# def return_ca():
+#     return render_template('search_result.html')
+
+# @app.route("/return_ca", methods=["GET", "POST"])  # 根据水印返回数据库中的证书信息
+# def return_ca():
+#     wm=session['watermark']
+#     ca=ca_db()
+#     res=ca.get_certificate_by_wm(wm)
+#     if not res == None:
+#         return res
+#     return {}
+
 
     #之前的任务，这里暂时不管
     #改这里的页面文件

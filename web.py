@@ -89,7 +89,7 @@ class web:
         self.wm_size = result['wm_size']
         wm = self.watermark_extract.extract(filename=self.path_in + self.filename_in, embed_img=None, wm_shape=self.wm_size,
                                             out_wm_name=None, mode='str')
-        self.delete()
+        #self.delete()
         return wm
 
 
