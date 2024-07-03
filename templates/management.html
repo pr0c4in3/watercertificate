@@ -30,17 +30,37 @@ let currentPage = 1;
 const itemsPerPage = 10; // 每页显示的条目数
 
 async function searchCertificates() {
-    const searchQuery = document.getElementById('search-input').value;
+    var searchQuery = document.getElementById('search-input').value;
     const loggedInUser = localStorage.getItem('loggedInUser');
     console.log('搜索查询:', searchQuery);
     console.log('当前用户:', loggedInUser);
 
-    // 假设这里调用后台的 JSON 接口
-    const response = await fetch(`/showlist`);
+    // 创建 FormData 对象
+    var formData = new FormData();
+    formData.append('watermark', searchQuery);
+    //formData.append('loggedInUser', loggedInUser);
+
+    // 发送表单数据到后端
+    const response = await fetch(`/showlist`, {
+        method: 'POST',
+        body: formData
+    });
     const certificates = await response.json();
 
     displayCertificates(certificates);
 }
+// async function searchCertificates() {
+//     const searchQuery = document.getElementById('search-input').value;
+//     const loggedInUser = localStorage.getItem('loggedInUser');
+//     console.log('搜索查询:', searchQuery);
+//     console.log('当前用户:', loggedInUser);
+
+//     // 假设这里调用后台的 JSON 接口
+//     const response = await fetch(`/showlist`);
+//     const certificates = await response.json();
+
+//     displayCertificates(certificates);
+// }
 
 function displayCertificates(certificates) {
     const tableBody = document.querySelector('#certificate-table tbody');

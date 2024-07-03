@@ -88,6 +88,8 @@ def management():
 def showlist():
     print('use showlist')
     wm=request.form['watermark']
+    a=request.form
+    print(a)
     username1=session['username']   #当前用户名
     certificate_db=ca_db()
     if wm==None:
