@@ -84,21 +84,25 @@ def management():
     return render_template('management.html',username=username1)
 
 
-@app.route('/showlist')
+@app.route('/showlist', methods=['GET', 'POST'])
 def showlist():
     print('use showlist')
     wm=request.form['watermark']
-    a=request.form
-    print(a)
+    #a=request.form
+    #print(wm)
+    blank=True if wm=='' else False
+    #print(blank)
     username1=session['username']   #当前用户名
     certificate_db=ca_db()
-    if wm==None:
+    if blank:
+        print('blank')
         result=certificate_db.get_certificate_by_user(username1)
         # res = json.dumps(result)      #debug
         # print(result)
         # print(res)
         return result
     else:
+        print('with watermark')
         result=certificate_db.get_certificate_by_wm_and_user(username1,wm)
         return result
 

@@ -79,6 +79,24 @@ class ca_db:
         except sqlite3.IntegrityError:
             return False
         
+    def get_certificate_by_wm_and_user(self, user :str,watermark: str) -> Optional[dict]:
+        cur = self.conn.cursor()
+        cur.execute('''
+            SELECT * FROM certificates
+            WHERE watermark = ? AND username= ?
+        ''', (watermark,user))
+        rows = cur.fetchall()
+        certificates = []
+        for row in rows:
+            certificates.append({
+                'id': row[0],
+                'username': row[1],
+                'image_path': row[2],
+                'image_name': row[3],
+                'watermark': row[4],
+                'watermark_key': row[5]
+            })
+        return certificates
 
     def get_certificate_by_user(self, username: str) -> list:
         cur = self.conn.cursor()
@@ -133,23 +151,7 @@ class ca_db:
                 'watermark_key': row[5]
             }
         return None
-    def get_certificate_by_wm_and_user(self, user :str,watermark: str) -> Optional[dict]:
-        cur = self.conn.cursor()
-        cur.execute('''
-            SELECT * FROM certificates
-            WHERE watermark = ? AND username= ?
-        ''', (watermark,user))
-        row = cur.fetchone()
-        if row:
-            return {
-                'id': row[0],
-                'username': row[1],
-                'image_path': row[2],
-                'image_name': row[3],
-                'watermark': row[4],
-                'watermark_key': row[5]
-            }
-        return None
+    
     
     def get_certificate_by_img(self, img_name: str) -> Optional[dict]:
         cur = self.conn.cursor()
