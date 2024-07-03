@@ -100,7 +100,7 @@ def showlist():
 # img_name=''
 @app.route('/pic', methods=['GET', 'POST'])
 def pic():
-    username1=session['username']
+    #username1=session['username']
     result1 = request.form
     ca=ca_db()
     session['img_name']=result1['image_name']
@@ -112,13 +112,20 @@ def pic():
 
 @app.route('/del_pic', methods=['GET', 'POST'])
 def del_pic():
-    username1=session['username']
+    fca=web()
+    #username1=session['username']
     result = request.form
-    return render_template('pic.html',image=username1)
+    print(result['image_name'])
+    ca=ca_db()
+    answer = ca.delete_certificate_by_image_name(result['image_name'])
+    if  answer:
+        return {'status': 'ok'}
+    else:
+        return {'status': 'error'}
 
 @app.route('/pic1', methods=['GET', 'POST'])
 def pic1():
-    image=session['img_path']+session['img_name']
+    #image=session['img_path']+session['img_name']
     print(session['img_path']+session['img_name'])
     # return render_template('pic.html',image=session['img_path']+session['img_name'])
     return send_from_directory(session['img_path'],session['img_name'])

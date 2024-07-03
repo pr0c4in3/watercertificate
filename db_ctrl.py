@@ -170,7 +170,19 @@ class ca_db:
             })
         return certificates
 
-
+    def delete_certificate_by_image_name(self, image_name):
+        try:
+            # 使用参数化查询来防止SQL注入
+            with self.conn:
+                self.conn.execute(
+                    'DELETE FROM certificates WHERE image_name = ?',
+                    (image_name,)
+                )
+            return True
+        except Exception as e:
+            # 处理可能的异常，并返回错误信息
+            return False
+    
 if __name__ == "__main__":
     login_manager = login_db()
     ca_manager = ca_db()

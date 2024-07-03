@@ -99,35 +99,38 @@ function updatePagination(totalItems) {
 
 function previewImage(imageName) {
     var formData = new FormData();
-formData.append('image_name', imageName);
+    formData.append('image_name', imageName);
 
-fetch('/pic', {
-    method: 'POST',
-    body: formData
-}).then(response => {
+    fetch('/pic', {
+        method: 'POST',
+        body: formData
+    }).then(response => {
     if (response.ok) {
         // 假设Flask端点处理POST请求后重定向到'/success_page'
         window.location.href = '/pic1'; // 重定向到新页面
     }
     // ...
-})
-    
+    })
     // 处理其他情况（例如显示错误消息）
     .catch(error => {
     // 处理网络错误或其他问题
     console.error('There was a problem with the fetch operation:', error);
-});
+    });
     // window.open(`/pic?image_name=${imageName}`, '_blank');
 }
 
 function confirmDelete(imageName) {
     if (confirm("确定要删除这张图片吗？")) {
+        var formData = new FormData();
+        formData.append('image_name', imageName);
         fetch('/del_pic', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ image_name: imageName })
+            body: formData
+            // method: 'POST',
+            // headers: {
+            //     'Content-Type': 'application/json'
+            // },
+            // body: JSON.stringify({ image_name: imageName })
         }).then(response => {
             if (response.ok) {
                 alert('图片已删除');
