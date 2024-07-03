@@ -87,13 +87,18 @@ def management():
 @app.route('/showlist')
 def showlist():
     print('use showlist')
+    wm=request.form['watermark']
     username1=session['username']   #当前用户名
     certificate_db=ca_db()
-    result=certificate_db.get_certificate_by_user(username1)
-    # res = json.dumps(result)      #debug
-    # print(result)
-    # print(res)
-    return result
+    if wm==None:
+        result=certificate_db.get_certificate_by_user(username1)
+        # res = json.dumps(result)      #debug
+        # print(result)
+        # print(res)
+        return result
+    else:
+        result=certificate_db.get_certificate_by_wm_and_user(username1,wm)
+        return result
 
 
 # img_path=''
