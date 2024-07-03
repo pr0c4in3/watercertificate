@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file, render_template
+from flask import Flask, request, send_file, render_template,send_from_directory
 from web import web
 from flask import Flask, render_template, request, redirect, url_for, flash, g, session #登录相关
 from db_ctrl import login_db,ca_db #调用登录库，证书管理库
@@ -96,8 +96,32 @@ def showlist():
     return result
 
 
+# img_path=''
+# img_name=''
+@app.route('/pic', methods=['GET', 'POST'])
+def pic():
+    username1=session['username']
+    result1 = request.form
+    ca=ca_db()
+    session['img_name']=result1['image_name']
+    ca1=ca.get_certificate_by_img(session['img_name'])
+    session['img_path']=ca1['image_path']
+    return {}
+    # print(img_path+img_name)
+    # return  render_template('pic.html',image=img_path+img_name)
 
+@app.route('/del_pic', methods=['GET', 'POST'])
+def del_pic():
+    username1=session['username']
+    result = request.form
+    return render_template('pic.html',image=username1)
 
+@app.route('/pic1', methods=['GET', 'POST'])
+def pic1():
+    image=session['img_path']+session['img_name']
+    print(session['img_path']+session['img_name'])
+    # return render_template('pic.html',image=session['img_path']+session['img_name'])
+    return send_from_directory(session['img_path'],session['img_name'])
 
 
 

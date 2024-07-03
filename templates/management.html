@@ -17,28 +17,17 @@
         position: absolute;
         right: 20px;
     }
+    .pagination {
+        text-align: center;
+        margin-top: 20px;
+    }
+    .pagination button {
+        margin: 0 5px;
+    }
 </style>
 <script>
-//     document.addEventListener('DOMContentLoaded', () => {
-//     const loggedInUser = localStorage.getItem('loggedInUser');
-//     const loggedInUserSpan = document.getElementById('logged-in-user');
-//     const searchButton = document.getElementById('search-button');
-//     const logoutButton = document.getElementById('logout-button');
-
-//     if (loggedInUser) {
-//         loggedInUserSpan.textContent = loggedInUser;
-//     } else {
-//         // 禁用搜索按钮
-//         searchButton.disabled = true;
-//         // 添加全局点击事件监听器
-//         document.body.addEventListener('click', function(event) {
-//             alert('请先登录');
-//         });
-//     }
-
-//     searchButton.addEventListener('click', searchCertificates);
-//     logoutButton.addEventListener('click', logout);
-// });
+let currentPage = 1;
+const itemsPerPage = 10; // 每页显示的条目数
 
 async function searchCertificates() {
     const searchQuery = document.getElementById('search-input').value;
@@ -50,41 +39,120 @@ async function searchCertificates() {
     const response = await fetch(`/showlist`);
     const certificates = await response.json();
 
+    displayCertificates(certificates);
+}
+
+function displayCertificates(certificates) {
     const tableBody = document.querySelector('#certificate-table tbody');
     tableBody.innerHTML = ''; // 清空表格内容
 
-    certificates.forEach(certificate => {
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const paginatedCertificates = certificates.slice(start, end);
+
+    paginatedCertificates.forEach(certificate => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${certificate.id}</td>
             <td>${certificate.image_name}</td>
             <td>${certificate.watermark}</td>
+            <td><button onclick="previewImage('${certificate.image_name}')">预览</button></td>
+            <td><button onclick="confirmDelete('${certificate.image_name}')">删除</button></td>
         `;
         tableBody.appendChild(row);
     });
+
+    updatePagination(certificates.length);
 }
 
-// function logout() {
-//     localStorage.removeItem('loggedInUser');
-//     window.location.href = 'login.html';
-// }
+function updatePagination(totalItems) {
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const paginationDiv = document.getElementById('pagination');
+    paginationDiv.innerHTML = '';
+
+    const prevButton = document.createElement('button');
+    prevButton.textContent = '上一页';
+    prevButton.disabled = currentPage === 1;
+    prevButton.onclick = () => {
+        if (currentPage > 1) {
+            currentPage--;
+            searchCertificates();
+        }
+    };
+    paginationDiv.appendChild(prevButton);
+
+    const pageInfo = document.createElement('span');
+    pageInfo.textContent = `第 ${currentPage} 页 / 共 ${totalPages} 页`;
+    paginationDiv.appendChild(pageInfo);
+
+    const nextButton = document.createElement('button');
+    nextButton.textContent = '下一页';
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.onclick = () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            searchCertificates();
+        }
+    };
+    paginationDiv.appendChild(nextButton);
+}
+
+function previewImage(imageName) {
+    var formData = new FormData();
+formData.append('image_name', imageName);
+
+fetch('/pic', {
+    method: 'POST',
+    body: formData
+}).then(response => {
+    if (response.ok) {
+        // 假设Flask端点处理POST请求后重定向到'/success_page'
+        window.location.href = '/pic1'; // 重定向到新页面
+    }
+    // ...
+})
+    
+    // 处理其他情况（例如显示错误消息）
+    .catch(error => {
+    // 处理网络错误或其他问题
+    console.error('There was a problem with the fetch operation:', error);
+});
+    // window.open(`/pic?image_name=${imageName}`, '_blank');
+}
+
+function confirmDelete(imageName) {
+    if (confirm("确定要删除这张图片吗？")) {
+        fetch('/del_pic', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ image_name: imageName })
+        }).then(response => {
+            if (response.ok) {
+                alert('图片已删除');
+                searchCertificates(); // 刷新表格
+            } else {
+                alert('删除失败');
+            }
+        });
+    }
+}
 
 </script>
 </head>
  
 <body>
-    <!-- <form action=""> -->
-        <div class="logout">
-            <span style="color: white;font-weight: bolder; margin: 0;">欢迎你&nbsp;{{username}}</span>
-            <button   onclick="cclick()" >Logout</button>
-            <script>
-                function cclick(){
-                    alert("登出当前用户");
-                    window.location.href = 'login';
-                }
-            </script>
-        </div>
-    <!-- </form> -->
+    <div class="logout">
+        <span style="color: white;font-weight: bolder; margin: 0;">欢迎你&nbsp;{{username}}</span>
+        <button onclick="cclick()">Logout</button>
+        <script>
+            function cclick(){
+                alert("登出当前用户");
+                window.location.href = 'login';
+            }
+        </script>
+    </div>
 
   <div class='card-holder'>
     <div class='card-wrapper'>
@@ -108,21 +176,6 @@ async function searchCertificates() {
             </div>
         </a>
     </div>
-                <!--侧边栏 -->
-    <!-- <div class='card-wrapper'>
-        <a href='#'>
-            <div class='card bg-05'>
-                <span class='card-content'>menu item #5</span>
-            </div>
-        </a>
-    </div>
-    <div class='card-wrapper'>
-        <a href='#'>
-            <div class='card bg-06'>
-                <span class='card-content'>long menu item #1</span>
-            </div>
-        </a>
-    </div> -->
   </div>
   <div class="box">
     <div class="header">
@@ -133,7 +186,7 @@ async function searchCertificates() {
     </div>
     <div class="search-bar">
         <input type="text" id="search-input" placeholder="搜索证书...">
-        <button id="search-button">搜索</button>
+        <button id="search-button" onclick="searchCertificates()">搜索</button>
     </div>
     <div id="certificate-list">
         <table id="certificate-table">
@@ -142,18 +195,19 @@ async function searchCertificates() {
                     <th>ID</th>
                     <th>图片名称</th>
                     <th>水印</th>
+                    <th>预览</th>
+                    <th>删除</th>
                 </tr>
             </thead>
-            <script>
-                searchCertificates();
-            </script>
             <tbody>
                 <!-- 证书列表将在这里动态生成 -->
             </tbody>
         </table>
     </div>
+    <div id="pagination" class="pagination">
+        <!-- 分页按钮和页码将在这里动态生成 -->
+    </div>
   </div>
-
 
   <div class="msg_box">
     <div class="msg_btn_box">

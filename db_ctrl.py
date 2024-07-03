@@ -134,6 +134,24 @@ class ca_db:
             }
         return None
     
+    def get_certificate_by_img(self, img_name: str) -> Optional[dict]:
+        cur = self.conn.cursor()
+        cur.execute('''
+            SELECT * FROM certificates
+            WHERE image_name = ?
+        ''', (img_name,))
+        row = cur.fetchone()
+        if row:
+            return {
+                'id': row[0],
+                'username': row[1],
+                'image_path': row[2],
+                'image_name': row[3],
+                'watermark': row[4],
+                'watermark_key': row[5]
+            }
+        return None
+    
     def debug_certificate(self) -> list:
         cur = self.conn.cursor()
         cur.execute('''
