@@ -1,0 +1,104 @@
+<!-- 
+0.项目结构：
+my-chrome-extension/
+├── manifest.json
+├── background.js
+├── content.js
+├── popup.html
+├── popup.js
+├── styles.css
+└── icons/
+    ├── icon16.png
+    ├── icon48.png
+    └── icon128.png
+-->
+
+   
+<!-- 
+1.manifest.json：
+    {
+  "manifest_version": 3,
+  "name": "My Chrome Extension",
+  "version": "1.0",
+  "description": "A simple Chrome extension",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+} 
+-->
+
+<!-- 
+2.background.js：
+chrome.runtime.onInstalled.addListener(() => {
+  console.log("Extension installed");
+}); 
+-->
+
+<!-- 
+3.content.js：
+console.log("Content script loaded"); 
+-->
+
+<!-- popup.html:(扩展的弹出窗口HTML文件) -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Chrome Extension</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+  <h1>Hello, Chrome Extension!</h1>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+  console.log("Popup loaded");
+}); 
+  </script>
+</body>
+</html>
+<!-- 页面样式就不弄了 -->
+
+<!-- 
+1.manifest.json：
+manifest_version: 指定Manifest文件的版本，对于Chrome扩展，目前是3。
+name: 扩展的名称。
+version: 扩展的版本号。
+description: 扩展的简短描述。
+permissions: 扩展所需的权限列表，例如访问当前标签页和存储数据。
+background: 指定后台脚本文件，这里使用的是service_worker，这是Manifest V3的新特性。
+action: 定义扩展的默认弹出窗口和图标。
+content_scripts: 指定内容脚本及其匹配的URL模式，这里匹配所有URL。
+icons: 扩展的图标，用于在Chrome扩展管理页面和工具栏中显示。
+
+2.background.js
+后台脚本，在扩展安装或更新时运行。这里只是简单地打印一条消息。
+
+3.content.js
+内容脚本，注入到匹配的网页中运行。这里只是简单地打印一条消息。
+
+4.popup.html
+扩展的弹出窗口HTML文件，当用户点击扩展图标时显示。并处理弹出窗口的逻辑。这里只是简单地打印一条消息。
+
+这个框架提供了一个基本的Chrome扩展结构，包括后台脚本、内容脚本和一个简单的弹出窗口 -->
